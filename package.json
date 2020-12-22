@@ -1,0 +1,32 @@
+{
+  "name": "socketio",
+  "version": "1.0.0",
+  "description": "using socketio with nodejs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./src/server.js",
+    "dev": "nodemon ./src/server.js",
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mas3oude/SocketIO.git"
+  },
+  "keywords": [
+    "nodejs",
+    "socketio"
+  ],
+  "author": "Mohamed Masoud",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mas3oude/SocketIO/issues"
+  },
+  "homepage": "https://github.com/Mas3oude/SocketIO#readme",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.6"
+  }
+}
