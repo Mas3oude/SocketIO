@@ -1,0 +1,21 @@
+Network package are 5 
+from down to up
+1- Physical --  actual phical cables
+2- Link  ---- wifi or eathernet connection
+3- Network  -- IP
+4- Transport -- UDP or TCP   so network and Transport called ---> TCP/IP
+5- Application   --- HTTP or HTTPS , SSH and FTP and SMTP
+
+
+Transport layer creates 2 to the powe 16 ports in your compueter 65000 ports
+
+UDP 
+    -is light weight
+    -8 bytes for the header
+    -connection less which means when you want to send data .. they don't have to create connection they just start talking
+        even if the another computer not replying
+    -send data no matter of what 
+    - from my experience it is used more for the video calls and when you don't care if there will any missing in the packets
+
+
+

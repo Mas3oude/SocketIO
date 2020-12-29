@@ -1,0 +1,28 @@
+<!-- https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API -->
+
+<!-- https://developer.mozilla.org/en-US/docs/Web/API/WebSocket -->
+<html>
+
+<header>
+
+</header>
+<body>
+<script>
+
+
+    let ws = new WebSocket('ws://localhost:7000');
+    console.log(ws);
+    ws.onopen = (event)=>
+    {
+        console.log(`connection is opened`);
+        ws.send(`I am so Happy That I am Connected to your Websocket`);
+    };
+    ws.onmessage = (event)=>{
+        //event will have all the data once the message is sent from the websoket
+        //inside the event we have the data propterty which is the message send from the server
+        console.log(event.data);
+    };
+
+</script>
+</body>
+</html>
