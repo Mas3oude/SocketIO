@@ -1,0 +1,35 @@
+<html>
+    <header>
+     
+    </header>
+    <!-- i am going to include the CDN url for socket io for client -->
+    <body>
+       
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" ></script>
+        <script>
+            const socket = io('http://localhost:7001');
+           
+            //console.log(socket);
+
+            socket.on('connect',async(data)=>
+            {
+                console.log(`connection is opened`);
+
+                socket.on('welcome',(message)=>{
+                    console.log(message);
+                });
+              
+                console.log(`..trying to send message from client to server`);
+               const result = await socket.emit('message',{data : 'I am so happy for connection'});
+               if (result)
+               {
+                   console.log(result);
+                   console.log(`working fine`);
+               }
+                
+               
+            });
+          
+        </script>
+    </body>
+</html>

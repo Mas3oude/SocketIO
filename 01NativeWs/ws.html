@@ -15,7 +15,10 @@
     ws.onopen = (event)=>
     {
         console.log(`connection is opened`);
-        ws.send(`I am so Happy That I am Connected to your Websocket`);
+        console.log(`try to send message`);
+        console.log(`state : ${ws.readyState}`);
+        console.log(`values of the state : 0->connecting  1->open  2->closing  3->closed`);
+        ws.send(`I am so Happy That I am Connected to your Websocket`);    
     };
     ws.onmessage = (event)=>{
         //event will have all the data once the message is sent from the websoket
@@ -23,6 +26,7 @@
         console.log(event.data);
     };
 
+    
 </script>
 </body>
 </html>
