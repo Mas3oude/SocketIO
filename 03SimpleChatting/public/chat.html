@@ -1,0 +1,32 @@
+<html>
+    <header>
+        <title>Simple Chat app</title>
+    </header>
+<body>
+    <h1>welcome to my chat app</h1>
+    <!-- assign the socketio lib -->
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" ></script>
+    <!-- string app -->
+    <script>
+        const socket = io("http://localhost:7003");
+        //console.log(socket);
+        // listen to event
+        socket.on('messageFromServer',(data)=>{
+
+            console.log(data);
+            socket.emit('messageFromClient',{someData: `this is some data from the client`});
+
+        });
+         
+
+         socket.on('ping',()=>{
+             console.log(`ping was recieved from the server: `);
+         });
+         socket.on('pong',(latency)=>{
+             console.log(latency);
+             console.log('ping was sent to the server');
+         });
+    </script>
+</body>
+</html>
