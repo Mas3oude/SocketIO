@@ -62,15 +62,24 @@ io.on('connection',(socket)=>{
             console.log(dataFromClient.someData);
         }
     });
+
+    //socket here is just from one client
+    // when i recieve it i wanna send it to all the sockets connected
+    //so i am going to use io 
+    socket.on('newMessgeToServer',(msg=>{
+        console.log(msg.text);
+        //to send the message to all the connected sockets
+        io.emit('messageToClients',{text : msg.text});
+    }));
 });
 
-const chatSocket = io.of('/chat',(socket)=>{
-    console.log(`connection from client with id : ${socket.id}`);
-    socket.emit('messageFromChat',{data: `simple message from chat namespace`});
-});
-chatSocket.on('messageFromClient',(dataFromClient) =>{
-    if (dataFromClient)
-    {
-        console.log(dataFromClient.someData);
-    }
-});
+// const chatSocket = io.of('/chat',(socket)=>{
+//     console.log(`connection from client with id : ${socket.id}`);
+//     socket.emit('messageFromChat',{data: `simple message from chat namespace`});
+// });
+// chatSocket.on('messageFromClient',(dataFromClient) =>{
+//     if (dataFromClient)
+//     {
+//         console.log(dataFromClient.someData);
+//     }
+// });
