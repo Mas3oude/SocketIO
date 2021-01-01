@@ -69,8 +69,16 @@ io.on('connection',(socket)=>{
     socket.on('newMessgeToServer',(msg=>{
         console.log(msg.text);
         //to send the message to all the connected sockets
-        io.emit('messageToClients',{text : msg.text});
+        io.emit('messageToClients',{text : msg.text , senderid : socket.id});
     }));
+
+    socket.on('disconnect',(reason)=>{
+        console.log(`browser with socket id : ${socket.id} is Disconnected`);
+        console.log(`display reason : ${reason}`);
+        io.emit('useDisConnected',{
+            userid : socket.id
+        });
+    });
 });
 
 // const chatSocket = io.of('/chat',(socket)=>{

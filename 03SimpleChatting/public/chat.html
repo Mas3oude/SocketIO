@@ -74,8 +74,14 @@
 
         socket.on('messageToClients',(data)=>{
                 console.log(`data from server : ${data.text}`);
-                document.querySelector('#messages').innerHTML += `<li> ${socket.id} : ${data.text} </li>`;
+                document.querySelector('#messages').innerHTML += `<li> ${data.senderid} : ${data.text} </li>`;
             });
+        
+        socket.on('useDisConnected',(data)=>{
+            
+            console.log(`user with ID : ${data.userid}`);
+            document.querySelector('#messages').innerHTML += `<li> user with id : ${data.userid} ====> DISCONNECTED </li>`;
+        });
 
         //  socket.on('ping',()=>{
         //      console.log(`ping was recieved from the server: `);
