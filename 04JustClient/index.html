@@ -1,0 +1,95 @@
+<html>
+    <header>
+        <title>Simple Chat app</title>
+    </header>
+<body>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <style>
+        input{
+            width: 100%;
+            height: 35px;
+        }
+        #messages{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        #messages li{
+            padding: 5px 10px;
+        }
+        #messages li:nth-child(odd){
+            background: #eee;
+        }
+    </style>
+    <h1>welcome to my chat app</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <form id="message-form">
+                    <div class="col-sm-10">
+                        <input id="user-message" type="text" placeholder="enter your message" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input class="btn btn-primary" type="submit" value="send!" />
+                    </div>
+                </form>
+                <ul id="messages">
+                    <!-- THIS WILL BE POPULATED BY JAVASCRIPT -->
+                </ul> 
+            </div>
+        </div>
+    </div>
+    <!-- assign the socketio lib -->
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" ></script>
+    <!-- string app -->
+    <script>
+        const socket = io("http://localhost:7003");
+        //console.log(socket.id); // will not work here because it is async 
+        //console.log(socket);
+        
+        // when the connection established the socket.id will have value
+        socket.on('connect',()=>{
+            console.log(socket.id);
+        });
+
+        // listen to event
+        socket.on('messageFromServer',(data)=>{
+
+            console.log(data);
+            socket.emit('messageFromClient',{someData: `this is some data from the client`});
+
+        });
+         
+        document.querySelector('#message-form').addEventListener('submit',
+        (event)=>{
+            event.preventDefault();
+            //console.log("form Submitted");
+            const newMessage = document.querySelector('#user-message').value;
+            //console.log(`new Messge : ${newMessage}`);
+            socket.emit('newMessgeToServer',{text: newMessage});
+
+        });
+
+        socket.on('messageToClients',(data)=>{
+                console.log(`data from server : ${data.text}`);
+                document.querySelector('#messages').innerHTML += `<li> ${data.senderid} : ${data.text} </li>`;
+            });
+        
+        socket.on('useDisConnected',(data)=>{
+            
+            console.log(`user with ID : ${data.userid}`);
+            document.querySelector('#messages').innerHTML += `<li> user with id : ${data.userid} ====> DISCONNECTED </li>`;
+        });
+
+        //  socket.on('ping',()=>{
+        //      console.log(`ping was recieved from the server: `);
+        //  });
+        //  socket.on('pong',(latency)=>{
+        //      console.log(latency);
+        //      console.log('ping was sent to the server');
+        //  });
+    </script>
+</body>
+</html>

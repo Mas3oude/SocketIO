@@ -2,14 +2,18 @@
 const express = require('express');
 //import or using socketio
 const socketio = require('socket.io');
-
+//import CORS
+var cors = require('cors');
 //init express 
 const app = express();
 
 //init port
 const PORT = process.env.PORT || 7003;
+//enable CORS
 //middleware for statis resource
 app.use(express.static(__dirname+'/public'));
+
+app.options('*', cors());
 
 //listen to port
 //assign server to variable to be used by socketio
@@ -28,7 +32,15 @@ const expressServer = app.listen(PORT,(err)=>{
 //documentation for the serve 
 
 //******************https://socket.io/docs/v3/server-api/index.html*******************
+
 const io = socketio(expressServer,{
+
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
+      },
     //there are many options can be added while creating socket server
     path: '/socket.io', // this is the default value if you didn't add it 
     serveClient: true,// this is default value this means that you can  /socket.io/socket.io.js in html file instead of calling the CDN url
@@ -43,13 +55,14 @@ const io = socketio(expressServer,{
     cookie: false
 
 });
-
+let counter = 1;
 //here to add after on ... connect or connection .. they are the same
 // and it is the default namespace which is / 
 // you can add more namespaces which like routing 
 //as example : /chat or /api/v1/chatting 
 io.on('connection',(socket)=>{
-
+    counter = parseInt(counter) + 1;
+    socket.nickname = `user ${counter}`;
     console.log(`connection to server : ${socket.id}`);
 
     //publish with event
@@ -69,14 +82,14 @@ io.on('connection',(socket)=>{
     socket.on('newMessgeToServer',(msg=>{
         console.log(msg.text);
         //to send the message to all the connected sockets
-        io.emit('messageToClients',{text : msg.text , senderid : socket.id});
+        io.emit('messageToClients',{text : msg.text , senderid : socket.nickname});
     }));
 
     socket.on('disconnect',(reason)=>{
-        console.log(`browser with socket id : ${socket.id} is Disconnected`);
+        console.log(`browser with socket id : ${socket.nickname} is Disconnected`);
         console.log(`display reason : ${reason}`);
         io.emit('useDisConnected',{
-            userid : socket.id
+            userid : socket.nickname
         });
     });
 });
