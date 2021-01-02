@@ -1,0 +1,13 @@
+socketio with rabbitmq
+https://medium.com/swlh/real-time-exchange-information-with-microservices-and-nodejs-e6bf6623bca6
+https://codeburst.io/using-rabbitmq-for-microservices-communication-on-docker-a43840401819
+https://www.erlang-solutions.com/blog/using-rabbitmq-for-microservice-architecture-success-guest-blog-by-api-fortress-api.html
+https://codeburst.io/using-rabbitmq-for-microservices-communication-on-docker-a43840401819
+http://code.danyork.com/
+
+
+//secured 
+https://medium.com/better-programming/secure-websockets-with-express-and-socket-io-d9a0976c1427
+https://medium.com/@rwillt/authenticating-socket-io-clients-f1e6f39a25fe
+//secured  socket
+https://github.com/auth0-community/auth0-socketio-jwt
