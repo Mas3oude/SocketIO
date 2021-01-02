@@ -47,6 +47,7 @@ const io = socketio(expressServer,{
 });
 
 //another way to creat the socket server is to user server.attach
+//also server.listen is the same like server.attach
 // io = socketio();
 // io.attach(3004,{
 //     cors: {
@@ -69,6 +70,7 @@ io.on('connection',(socket)=>{
     console.log(`connection to server : ${socket.id}`);
 
     //publish with event
+    //socket.send is the same like socket.emit
     socket.emit('messageFromServer',{data : `welcome to socket io server your id is : ${socket.id}`});
 
     // listen to event
