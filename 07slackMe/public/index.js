@@ -14,7 +14,7 @@ socket.on('messageFromServer',(data)=>{
 
 });
  
-document.querySelector('#message-form').addEventListener('submit',
+document.querySelector('#user-input').addEventListener('submit',
 (event)=>{
     event.preventDefault();
     //console.log("form Submitted");
