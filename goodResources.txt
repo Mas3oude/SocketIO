@@ -11,3 +11,15 @@ https://medium.com/better-programming/secure-websockets-with-express-and-socket-
 https://medium.com/@rwillt/authenticating-socket-io-clients-f1e6f39a25fe
 //secured  socket
 https://github.com/auth0-community/auth0-socketio-jwt
+
+
+send message to specific user
+https://www.codershood.info/2016/01/24/sending-message-specific-user-socket-io/#:~:text=To%20send%20a%20message%20to,send%20a%20message%20to%20user1.
+
+ JWT authentication for SocketIO
+ http://wmyers.github.io/technical/nodejs/Simple-JWT-auth-for-SocketIO
+ https://stackoverflow.com/questions/36788831/authenticating-socket-io-connections-using-jwt
+
+ HTTPS
+ https://medium.com/@invingagan/an-express-https-server-with-a-self-signed-certificate-and-socket-io-42d1f02d4d1a
+ https://stackoverflow.com/questions/31156884/how-to-use-https-on-node-js-using-express-socket-io
