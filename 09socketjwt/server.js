@@ -18,10 +18,15 @@ const expressServer = app.listen(PORT,(err)=>{if (err){console.error(`Error : ${
 
 
 const verifyToken = (token, secret) => {
-    //console.log(`verify user token`);
+    try{
     return jwt.verify(token, secret, {
       algorithms: ['HS256'],
     });
+    }
+    catch(err){
+        console.log(`error in token verificiation ${err}`);
+        return null;
+    }
   };
   
 
@@ -31,8 +36,7 @@ const io = socketio(expressServer);
 io.use((socket, next) => {
     let token = socket.handshake.query.token;
     const verification = verifyToken(token,process.env.JWT_ACCESS_KEY);
-
-  if (verification.id == 1) {
+  if (verification) {
       
     return next();
   }
