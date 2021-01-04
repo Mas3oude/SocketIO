@@ -45,14 +45,16 @@
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" ></script> -->
     <!-- string app -->
     <script>
-        const token = "123eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpcnN0dXNlckBlbWFpbC5jb20iLCJpZCI6MSwic3RhdHVzIjozLCJpYXQiOjE2MDk3NTEyMjUsImV4cCI6MTYxMDYxNTIyNX0.g9Kb_ms0yne1KUf18GPOLSXg-Sen4X9j2sM2waUex_g";
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpcnN0dXNlckBlbWFpbC5jb20iLCJpZCI6MSwic3RhdHVzIjozLCJpYXQiOjE2MDk3NTEyMjUsImV4cCI6MTYxMDYxNTIyNX0.g9Kb_ms0yne1KUf18GPOLSXg-Sen4X9j2sM2waUex_g";
+        const invalidUserId = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpcnN0dXNlckBlbWFpbC5jb20iLCJpZCI6Miwic3RhdHVzIjozLCJpYXQiOjE2MDk3NjMwMjMsImV4cCI6MTYxMDYyNzAyM30.UcAasmpp4hW00Os3WWkFv96V4mAW3vemNJzkqtR4h2M";
         const socket = io("http://localhost:7009",
         {
             query: {
             token: token
+          //  token: invalidUserId
           }
         });
-
+        
         // client-side
     socket.on("connect_error", err => {
     console.log(err instanceof Error); // true
@@ -64,7 +66,7 @@
         
         // when the connection established the socket.id will have value
         socket.on('connect',()=>{
-            console.log(socket.id);
+            console.log(`connection to default connection is working fine with id ${socket.id}`);
         });
 
         // listen to event
@@ -96,13 +98,24 @@
             document.querySelector('#messages').innerHTML += `<li> user with id : ${data.userid} ====> DISCONNECTED </li>`;
         });
 
-        //  socket.on('ping',()=>{
-        //      console.log(`ping was recieved from the server: `);
-        //  });
-        //  socket.on('pong',(latency)=>{
-        //      console.log(latency);
-        //      console.log('ping was sent to the server');
-        //  });
+        const longNameSpaceSocket = io("http://localhost:7009/api/v1/testing",
+        {
+            query: {
+            token: token
+          //  token: invalidUserId
+          }
+        });
+
+        longNameSpaceSocket.on("connect_error", err => {
+            console.log(err instanceof Error); // true
+            console.log(err.message); // not authorized
+            console.log(err.data); // { content: "Please retry later" }
+            });
+
+
+            longNameSpaceSocket.on('connect',()=>{
+                console.log(`user connected to longNameSpace ${socket.id}`);
+            });
     </script>
 </body>
 </html>

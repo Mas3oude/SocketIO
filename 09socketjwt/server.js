@@ -33,47 +33,104 @@ const verifyToken = (token, secret) => {
 const io = socketio(expressServer);
 
 // middleware for authentication
-io.use((socket, next) => {
-    let token = socket.handshake.query.token;
-    const verification = verifyToken(token,process.env.JWT_ACCESS_KEY);
-  if (verification) {
-      
-    return next();
-  }
-  else{
-    console.log(`user not authorized`);
-    const err = new Error("not authorized");
-    err.data = { content: "Please retry later" }; // additional details
-    next(err);
-  }
+// io.use((socket, next) => {
+//     let token = socket.handshake.query.token;
+//     const decoded = verifyToken(token,process.env.JWT_ACCESS_KEY);
+//   if (decoded) {
+//       if (decoded.id == 1)
+//        {
+//            return next();
+//        }
+//        else{
+        
+//         console.log(`valid token with invalid userid`);
+//         const err = new Error("not authorized invalid userid");
+//         err.data = { content: "Please retry later" }; // additional details
+//         next(err);
+//        }
+//   }
+//   else{
+//     console.log(`user not authorized`);
+//     const err = new Error("not authorized");
+//     err.data = { content: "Please retry later" }; // additional details
+//     next(err);
+//   }
  
-  });
+//   });
   
-io.on('connection',(socket)=>{
-    let socketToken = socket.handshake.query.token;
-    console.log(`token from user : ${socketToken}`);
-    console.log(`Default namespace : User with ID : ${socket.id} `);
-    //publish with event
-    //socket.send is the same like socket.emit
-    socket.emit('messageFromServer',{data : `welcome to socket io server your id is : ${socket.id}`});
+// io.on('connection',(socket)=>{
+//     let socketToken = socket.handshake.query.token;
+//     console.log(`token from user : ${socketToken}`);
+//     console.log(`Default namespace : User with ID : ${socket.id} `);
+//     //publish with event
+//     //socket.send is the same like socket.emit
+//     socket.emit('messageFromServer',{data : `welcome to socket io server your id is : ${socket.id}`});
 
-    // listen to event
-    socket.on('messageFromClient',(dataFromClient) =>{
-        if (dataFromClient)
-        {
-            console.log(dataFromClient.someData);
-        }
-    });
+//     // listen to event
+//     socket.on('messageFromClient',(dataFromClient) =>{
+//         if (dataFromClient)
+//         {
+//             console.log(dataFromClient.someData);
+//         }
+//     });
+
+//     socket.on('disconnect',(reason)=>{
+//         console.log(`browser with socket id : ${socket.nickname} is Disconnected`);
+//         console.log(`display reason : ${reason}`);
+//         io.emit('useDisConnected',{
+//             userid : socket.id
+//         });
+//     });
+
+// });
+
+
+let nameSpaceUser = new Object();
+// trying long namespace
+const longnameSpace = io.of('/api/v1/testing');
+longnameSpace.use((socket,next)=>{
+    const nameSpaceToken = socket.handshake.query.token;
+    const decoded = verifyToken(nameSpaceToken,process.env.JWT_ACCESS_KEY);
+    if (decoded) {
+        if (decoded.id == 1)
+         {
+             nameSpaceUser.userid = decoded.id;
+             nameSpaceUser.email = decoded.email;
+             return next();
+         }
+         else{
+          
+          console.log(`valid token with invalid userid`);
+          const err = new Error("not authorized invalid userid");
+          err.data = { content: "Please retry later" }; // additional details
+          next(err);
+         }
+    }
+    else{
+      console.log(`user not authorized`);
+      const err = new Error("not authorized");
+      err.data = { content: "Please retry later" }; // additional details
+      next(err);
+    }
+});
+longnameSpace.on('connect',(socket)=>{
+    nameSpaceUser.socketid = socket.id;
+    console.log(`user with the following information : 
+                 id : ${nameSpaceUser.userid}
+                 socketid:${nameSpaceUser.socketid}
+                 email : ${nameSpaceUser.email} `);
+    
 
     socket.on('disconnect',(reason)=>{
-        console.log(`browser with socket id : ${socket.nickname} is Disconnected`);
-        console.log(`display reason : ${reason}`);
-        io.emit('useDisConnected',{
-            userid : socket.id
-        });
+    console.log(`display reason : ${reason}`);
+    console.log(`socketid : ${socket.id}`);
+    io.emit('useDisConnected',{
+        userid : socket.id
+     });
     });
-
+        
 });
+
 
 
 // const adminNameSpace = io.of('/admin');
