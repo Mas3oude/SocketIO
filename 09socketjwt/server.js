@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const socketio = require('socket.io');
 var favicon = require('serve-favicon');
+const jwt = require('jsonwebtoken');
 var path = require('path');
 
 //init express 
@@ -15,10 +16,38 @@ app.use(express.static(__dirname+'/public'));
 //listen to port
 const expressServer = app.listen(PORT,(err)=>{if (err){console.error(`Error : ${err}`);}else{console.log(`server running in port : ${PORT}`);}});
 
+
+const verifyToken = (token, secret) => {
+    //console.log(`verify user token`);
+    return jwt.verify(token, secret, {
+      algorithms: ['HS256'],
+    });
+  };
+  
+
 const io = socketio(expressServer);
 
-io.on('connection',(socket)=>{
+// middleware for authentication
+io.use((socket, next) => {
+    let token = socket.handshake.query.token;
+    const verification = verifyToken(token,process.env.JWT_ACCESS_KEY);
 
+  if (verification.id == 1) {
+      
+    return next();
+  }
+  else{
+    console.log(`user not authorized`);
+    const err = new Error("not authorized");
+    err.data = { content: "Please retry later" }; // additional details
+    next(err);
+  }
+ 
+  });
+  
+io.on('connection',(socket)=>{
+    let socketToken = socket.handshake.query.token;
+    console.log(`token from user : ${socketToken}`);
     console.log(`Default namespace : User with ID : ${socket.id} `);
     //publish with event
     //socket.send is the same like socket.emit
@@ -40,29 +69,20 @@ io.on('connection',(socket)=>{
         });
     });
 
-    //starting with rooms
-    socket.join('level1');
-    //send the message to all the room except the sender because we are using the socket to send
-    // the message not the namespace
-    socket.to('level1').emit('joined',`${socket.id} : I have joined Level1 room`);
-    /*here i will send it using the namespace which means all the users inside
-     this room even the sender will recieve this message
-    **/
-  // io.of('/').to('level1').emit('joined',`message from namepsace user id : ${socket.id} just joined the room`);
 });
 
 
-const adminNameSpace = io.of('/admin');
-const adminNameSpaceText = `adminNameSpace: `;
-adminNameSpace.on('connect',(socket)=>{
+// const adminNameSpace = io.of('/admin');
+// const adminNameSpaceText = `adminNameSpace: `;
+// adminNameSpace.on('connect',(socket)=>{
 
-    console.log(`${adminNameSpaceText} user with id : ${socket.id} connected`);
-    adminNameSpace.emit('welcome',
-     {
-         data:{
-                text: `welcome to admin channel`
-              }
-    }
-    );
+//     console.log(`${adminNameSpaceText} user with id : ${socket.id} connected`);
+//     adminNameSpace.emit('welcome',
+//      {
+//          data:{
+//                 text: `welcome to admin channel`
+//               }
+//     }
+//     );
 
-});
+// });
