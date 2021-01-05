@@ -89,8 +89,13 @@ let nameSpaceUser = new Object();
 // trying long namespace
 const longnameSpace = io.of('/api/v1/testing');
 longnameSpace.use((socket,next)=>{
-    const nameSpaceToken = socket.handshake.query.token;
-    const decoded = verifyToken(nameSpaceToken,process.env.JWT_ACCESS_KEY);
+  debugger;
+   const headerToken = socket.handshake.headers['authorization'];
+   const actualToken = headerToken.replace('Bearer ', '');
+
+   // const nameSpaceToken = socket.handshake.query.token;
+   // const decoded = verifyToken(nameSpaceToken,process.env.JWT_ACCESS_KEY);
+   const decoded = verifyToken(actualToken,process.env.JWT_ACCESS_KEY);
     if (decoded) {
         if (decoded.id == 1)
          {
