@@ -4,6 +4,7 @@ const socketio = require('socket.io');
 var favicon = require('serve-favicon');
 const jwt = require('jsonwebtoken');
 var path = require('path');
+const requestIp = require('request-ip');
 
 //init express 
 const app = express();
@@ -120,6 +121,11 @@ longnameSpace.use((socket,next)=>{
 });
 longnameSpace.on('connect',(socket)=>{
     nameSpaceUser.socketid = socket.id;
+    const client_ip_address = socket.handshake.address;//socket.request.connection.remoteAddress;
+    //console.log(socket.request);
+    const clientIP = requestIp.getClientIp(socket.request);
+    console.log(clientIP);
+    console.log(client_ip_address);
     console.log(`user with the following information : 
                  id : ${nameSpaceUser.userid}
                  socketid:${nameSpaceUser.socketid}
