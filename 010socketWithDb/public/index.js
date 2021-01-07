@@ -1,7 +1,7 @@
 const validToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpcnN0dXNlckBlbWFpbC5jb20iLCJpZCI6MSwic3RhdHVzIjozLCJpYXQiOjE2MDk3NTEyMjUsImV4cCI6MTYxMDYxNTIyNX0.g9Kb_ms0yne1KUf18GPOLSXg-Sen4X9j2sM2waUex_g";
 const invalidUserId = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpcnN0dXNlckBlbWFpbC5jb20iLCJpZCI6Miwic3RhdHVzIjozLCJpYXQiOjE2MDk3NjMwMjMsImV4cCI6MTYxMDYyNzAyM30.UcAasmpp4hW00Os3WWkFv96V4mAW3vemNJzkqtR4h2M";
 
-const socket = io("http://localhost:7010",
+const socket = io("http://localhost:7010/api/v1/testing",
 {
     extraHeaders :{
         Authorization: `Bearer ${validToken}`
