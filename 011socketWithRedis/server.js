@@ -5,6 +5,7 @@ const favicon = require('serve-favicon');
 const path = require('path');
 const jwtProtect = require('./utils/jwtProtect');
 const requestIp = require('request-ip');
+const redisManager  = require('./redisUtils/redisManager');
 //init express 
 const app = express();
 
@@ -15,6 +16,15 @@ app.use(express.static(__dirname+'/public'));
 
 const expressServer = app.listen(PORT,(err)=>{if (err){console.error(`Error : ${err}`);}else{console.log(`server running in port : ${PORT}`);}});
 
+console.log(`init redis ......`);
+const initResults = redisManager.init();
+if (initResults == true)
+{
+    console.log(`Redis is connected and working fine`);
+}
+else{
+    console.log(`redis has issue with initilzation `);
+}
 // init socket.io
 const io = socketio(expressServer,{
    //path : '/api/v1/testing',
@@ -71,15 +81,28 @@ defaultNameSpace.use((socket,next)=>{
 
     nameSpaceUser.socketid = socket.id;
     const client_ip_address = socket.handshake.address;//socket.request.connection.remoteAddress;
+    nameSpaceUser.ipAddress = client_ip_address;
     //console.log(socket.request);
     const clientIP = requestIp.getClientIp(socket.request);
-    console.log(clientIP);
-    console.log(client_ip_address);
+   // console.log(clientIP);
+    //console.log(client_ip_address);
     console.log(`user with the following information : 
                  id : ${nameSpaceUser.userid}
                  socketid:${nameSpaceUser.socketid}
-                 email : ${nameSpaceUser.email} `);
+                 email : ${nameSpaceUser.email}
+                 ip_address : ${nameSpaceUser.ipAddress} `);
     
+    redisManager.setKeyValue(nameSpaceUser.userid.toString(),` {
+        data : {
+            socketid : ${nameSpaceUser.socketid},
+            email : ${nameSpaceUser.email},
+            ipAddress : ${nameSpaceUser.ipAddress}
+        }
+    }`);
+
+    redisManager.getValueByKey(nameSpaceUser.userid.toString()).
+    then(data=> {console.log(`data from server : ${data}`)});
+   
 
     socket.on('disconnect',(reason)=>{
     console.log(`display reason : ${reason}`);
