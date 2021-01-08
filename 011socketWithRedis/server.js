@@ -98,10 +98,15 @@ defaultNameSpace.use((socket,next)=>{
             email : ${nameSpaceUser.email},
             ipAddress : ${nameSpaceUser.ipAddress}
         }
-    }`);
+    }`).then(reply=>{
+        console.log(`saving results ${reply}`)
+    }).catch(err=>{
+        console.log(`error while saving  ${err}`);
+    });
 
-    redisManager.getValueByKey(nameSpaceUser.userid.toString()).
-    then(data=> {console.log(`data from server : ${data}`)});
+    redisManager.getValueByKey(nameSpaceUser.userid.toString())
+    .then(data=> {console.log(`data from server : ${data}`)})
+    .catch(err=>{console.log(`error while getting data ${err}`)});
    
 
     socket.on('disconnect',(reason)=>{

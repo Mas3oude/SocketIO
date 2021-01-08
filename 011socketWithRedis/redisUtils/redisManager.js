@@ -6,7 +6,9 @@ const redisHost = process.env.REDIS_HOSTNAME ;
 let redisClient;
 const init = ()=>{
     try{
-    redisClient = redis.createClient(redisPort,redisHost);
+    redisClient = redis.createClient(redisPort,redisHost,()=>{
+        console.log(`connected`);
+    });
     
     redisClient.on("error", function(error) {
         console.error(error);
@@ -25,10 +27,17 @@ const init = ()=>{
 
 
 const setKeyValue = (key,value)=>{
- const results =  redisClient.set(key,value);
- return results;
+ return new Promise((resolve,reject)=>{
+     redisClient.set(key,value,(err,reply)=>{
+         if (err)
+         reject(err);
+         else
+         resolve(reply);
+     });
+ });
+
 }
-const getValueByKey = async (key)=>{
+const getValueByKey =  (key)=>{
  return new Promise((resolve,reject)=>{
     redisClient.get(key,(err,data)=>{
         if (err)
