@@ -5,22 +5,16 @@ const redisPort = process.env.REDIS_PORT || 6379;
 const redisHost = process.env.REDIS_HOSTNAME ;
 let redisClient;
 const init = ()=>{
-    try{
-    redisClient = redis.createClient(redisPort,redisHost,()=>{
-        console.log(`connected`);
-    });
-    
-    redisClient.on("error", function(error) {
-        console.error(error);
-    });
-    console.log(`init method ............`);
-    return true;
-    }
-    catch(exception)
-    {
-        console.log(`error while creating instance of redis exceptoin : ${exception}`);
-        return false;
-    }
+  
+        redisClient = redis.createClient(redisPort,redisHost);
+        return new Promise((res, rej) => {
+            redisClient.on('connect', function() {
+              res(redisClient);
+            });
+            redisClient.on('error', function(err) {
+              rej(err);
+            });
+          });
 
 };
 
@@ -49,9 +43,17 @@ const getValueByKey =  (key)=>{
  
 };
 
+const saveHashSet = (key,value)=>{
+
+};
+const getHashSet = (key)=>{
+
+};
 
 module.exports = {
     init,
     setKeyValue,
-    getValueByKey
+    getValueByKey,
+    saveHashSet,
+    getHashSet
 };

@@ -17,14 +17,10 @@ app.use(express.static(__dirname+'/public'));
 const expressServer = app.listen(PORT,(err)=>{if (err){console.error(`Error : ${err}`);}else{console.log(`server running in port : ${PORT}`);}});
 
 console.log(`init redis ......`);
-const initResults = redisManager.init();
-if (initResults == true)
-{
-    console.log(`Redis is connected and working fine`);
-}
-else{
-    console.log(`redis has issue with initilzation `);
-}
+redisManager.init()
+.then(initResults=>{console.log(`Redis is connected and working fine ${initResults.ping((err,res)=>{console.log(res);})}`);})
+.catch(err=>{console.log(`error in connection ${err}`)});
+
 // init socket.io
 const io = socketio(expressServer,{
    //path : '/api/v1/testing',
