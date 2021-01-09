@@ -1,0 +1,37 @@
+require('dotenv').config();
+const path = require('path');
+const express = require('express');
+var morgan = require('morgan');
+var winston = require('./config/winston');
+const favicon = require('serve-favicon');
+const errorHandler = require('./src/middleware/errorHandler');
+
+/**
+ * @constant App is the starting of the application
+ */
+const app = express();
+
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(favicon(path.join(__dirname, 'public', 'notificationIcon.png')));
+app.use(express.static(__dirname+'/public'));
+app.use(morgan('combined'));
+app.use(morgan('combined', { stream: winston.stream }));
+
+/**
+ * handling 404 not found paths
+ */
+app.all('*', async (req, res, next) => {
+    const err = new NotFoundError(
+      `${req.originalUrl} does not exist on the server`
+    );
+    next(err);
+  });
+  
+  /**
+   * handling all errors
+   */
+  app.use(errorHandler);
+  
+  module.exports = app;
