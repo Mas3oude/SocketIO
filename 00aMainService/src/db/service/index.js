@@ -46,6 +46,57 @@ const createUser = async(currentSocket)=>{
     });
 };
 
+const createUserMessage = async (senderUserId,targetUserId,messagePayLoad)=>{
+    const targetUser = await findUserById(targetUserId);
+    const message = {
+        senderUserId : senderUserId,
+        payload : messagePayLoad,
+        sentToTarget : false
+    }
+    targetUser.messages.push(message);
+
+    await targetUser.save()
+    .then(saved=> {
+        greenlog(`user with id : ${targetUser.userId} a message saved because he is offline current message : ${saved.messages}`);
+        return true;
+    })
+    .catch(err=>{
+        redLog(`Error while saving message in offline userid ${targetUser.userId}`);
+        throw err;
+    });
+};
+/* #endregion */
+
+/* #region Update */
+const updateUser = async(currentSocket,currentsocketUser)=>{
+   
+    currentsocketUser.socketIds.push(
+        {
+            ip : currentSocket.ip,
+            socketId : currentSocket.id
+        }
+    );
+    if (currentsocketUser.connected == false) // check if the current connection status of the user is false 
+     {
+         currentsocketUser.connected = true; //update to true
+     }
+     await currentsocketUser.save()
+    .then(saved=> {greenlog(`user with id : ${currentSocket.userId} Updated with new Socketid : ${currentSocket.id} \n current sockets :  ${saved.socketIds}`);})
+    .catch(err=>{
+        redLog(`error while update user with id : ${currentSocket.userId} to updated with socketid : ${currentSocket.id}`);
+        throw err;
+    });
+   
+};
+
+const updateConnectionStatus = async (isConnected, userId)=>{};
+/*#endregion */
+
+/* #region Delte */
+const deleteUser = async(user)=>{
+
+};
+
 const removeSocketId = async (currentSocket)=>{
     const currentUser  = await socketUser.findOne({userId:currentSocket.userId});
     if (currentUser)
@@ -74,48 +125,16 @@ const removeSocketId = async (currentSocket)=>{
         return false;
     }
 };
-
-/* #endregion */
-
-/* #region Update */
-const updateUser = async(currentSocket,currentsocketUser)=>{
-   
-    currentsocketUser.socketIds.push(
-        {
-            ip : currentSocket.ip,
-            socketId : currentSocket.id
-        }
-    );
-    if (currentsocketUser.connected == false) // check if the current connection status of the user is false 
-     {
-         currentsocketUser.connected = true; //update to true
-     }
-     await currentsocketUser.save()
-    .then(saved=> {greenlog(`user with id : ${currentSocket.userId} Updated with new Socketid : ${currentSocket.id} \n current sockets :  ${saved.socketIds}`);})
-    .catch(err=>{
-        redLog(`error while update user with id : ${currentSocket.userId} to updated with socketid : ${currentSocket.id}`);
-        throw err;
-    });
-   
-};
-
-
-const updateConnectionStatus = async (isConnected, userId)=>{};
-/*#endregion */
-
-/* #region Delte */
-const deleteUser = async(user)=>{
-
-};
 /* #endregion */
 
 
 /* #region retrieve */
 
 const getAllUsers = async()=>{};
-const findUserById = async(userId)=>{
+
+const isValidUser = async(userId)=>{
     const currentUser  = await socketUser.findOne({userId:userId}); 
-    greenlog(`find user by id used by socketmiddle ware  `);
+    greenlog(`check if user is in database using isValidUser from SocketMiddleware  `);
     if (currentUser)
      {
          greenlog(`user found with id : ${currentUser.userId}`);
@@ -124,6 +143,19 @@ const findUserById = async(userId)=>{
      else{
          redLog(`user not found in database`);
         return false;
+     }
+};
+
+const findUserById = async(userId)=>{
+    const currentUser  = await socketUser.findOne({userId:userId}); 
+    if (currentUser)
+     {
+         greenlog(`user found with id : ${currentUser.userId}`);
+         return currentUser;
+     }
+     else{
+         redLog(`user not found in database`);
+        return null;
      }
 };
 const isUserConnected = async(userId)=>{};
@@ -141,5 +173,7 @@ createOrUpdateUser,
 deleteUser,
 removeSocketId,
 updateConnectionStatus,
-findUserById
+isValidUser,
+findUserById,
+createUserMessage
 };

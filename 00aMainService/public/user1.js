@@ -20,6 +20,7 @@ const socket = io("http://localhost:7000/api/v1/notification",
         // when the connection established the socket.id will have value
         socket.on('connect',()=>{
             console.log(`connection to namespace is working fine with id ${socket.id}`);
+            console.log(`check if the socket had some data  ${socket.userId} ${socket.email}`);
         });
 
         // listen to event

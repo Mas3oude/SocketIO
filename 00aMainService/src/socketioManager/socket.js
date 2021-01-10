@@ -1,7 +1,7 @@
 const socketio = require('socket.io');
 const requestIp = require('request-ip');
 const verifyToken = require('../middleware/jwtProtect');
-const {redLog,greenlog,bluelog} = require('../utils/coloredConsole');
+const {redLog,yellowLog,bluelog} = require('../utils/coloredConsole');
 const databaseService = require('../db/service');
 /* #region publicVars */
 let io ;
@@ -20,7 +20,7 @@ const validateUse =async (socket,next)=>{
     const decoded = verifyToken(actualToken,process.env.JWT_ACCESS_KEY);
      if (decoded) 
      {
-        const isValidUser = await databaseService.findUserById(decoded.id);
+        const isValidUser = await databaseService.isValidUser(decoded.id);
         
         if (isValidUser == true)
          {
@@ -63,8 +63,6 @@ const onConnect = async (socket)=>{
     bluelog(`user created or updated successfull`);
     
     bluelog(`set the listner for Disconnect`);
-    
-
 
     socket.on('disconnect',async(reason)=>{
         bluelog(`display reason : ${reason}`);
@@ -76,7 +74,12 @@ const onConnect = async (socket)=>{
         //     userId : socket.userId,
         //  });
         });
-
+     bluelog(`adding testing sender event Listner`);
+     socket.on('newMessgeToServer',(message)=>{
+         console.log(`test is the socket still have the data  : ${socket.userId}`);
+         yellowLog(`simulation message from RabbitMQ : ${socket.id}  text : ${message.text} `);
+         sendNotificationByUserId (socket.userId,2,message.text);
+     });
 };
 
 const onDisconnect =(reason)=>{
@@ -141,7 +144,41 @@ catch (err)
 /* #endregion */
 
 
+const sendNotificationByUserId= async (senderUserId, targetUserId, messagePayLoad)=>{
 
+    bluelog(`trying to send notification for userid [By Parameter]: ${targetUserId}`);
+    const targetUser = await  databaseService.findUserById(targetUserId);
+
+    if (targetUser)
+    {
+        bluelog(`user found to send notification userid [From Database]: ${targetUser.userId}`);
+        bluelog(`user current connection status is ${targetUser.connected}`);
+        if (targetUser.connected == true && targetUser.socketIds.length > 0) 
+        {
+            bluelog(`user status is connected `);
+            bluelog(`notification will be send`);
+            if (targetUser.socketIds.length == 1)
+            {
+                defaultNameSpace.to(targetUser.socketIds[0].socketId).emit('Notification',messagePayLoad);
+            }
+            else{
+                for (let i = 0 ; i < targetUser.socketIds.length ; i ++)
+                {
+                    defaultNameSpace.to(targetUser.socketIds[i].socketId).emit('Notification',messagePayLoad);
+                }
+            }
+            bluelog(`notification sent successfully`);
+        }
+        else{
+            yellowLog(`user status is offline`);
+            yellowLog(`notification will be saved in database`);
+            const saveMessageResults = await databaseService.createUserMessage(senderUserId,targetUserId,messagePayLoad);
+            if (saveMessageResults == true)
+            bluelog(`message save successfully to database`);
+        }
+    }
+    
+};
 
 
 
@@ -149,7 +186,8 @@ catch (err)
 /*#region Exports */
 
 module.exports = {
-    initSocket
+    initSocket,
+    sendNotificationByUserId
 }
 
 /*#endregion */

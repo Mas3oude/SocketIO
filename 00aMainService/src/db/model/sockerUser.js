@@ -14,7 +14,15 @@ const socketUserSchema = mongoose.Schema({
         {ip:String,
          socketId:{type:String,required:true},
         date: { type: Date, default: Date.now }
-        }]
+        }],
+    messages : [
+        {
+            senderUserId : {type : Number,required:true},
+            date : { type: Date, default: Date.now },
+            payload : {type:String,require : true},
+            sentToTarget : {type:Boolean,required:true}
+        }
+    ]
 });
 
 
