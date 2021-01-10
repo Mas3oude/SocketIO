@@ -23,9 +23,9 @@ app.use(morgan('combined', { stream: winston.stream }));
  * handling 404 not found paths
  */
 app.all('*', async (req, res, next) => {
-    const err = new NotFoundError(
+    const err = //new NotFoundError(
       `${req.originalUrl} does not exist on the server`
-    );
+   // );
     next(err);
   });
   

@@ -11,31 +11,40 @@ let defaultNameSpace;
 
 
 /* #region private */ 
-const validateUse = (socket,next)=>{
+const validateUse =async (socket,next)=>{
     const headerToken = socket.handshake.headers['authorization'];
     const actualToken = headerToken.replace('Bearer ', '');
  
     // const nameSpaceToken = socket.handshake.query.token;
     // const decoded = verifyToken(nameSpaceToken,process.env.JWT_ACCESS_KEY);
     const decoded = verifyToken(actualToken,process.env.JWT_ACCESS_KEY);
-     if (decoded) {
-         if (decoded.id == 1)
-          {
-              socket.userId = decoded.id;
-              socket.email = decoded.email;
-              if (socket.handshake.address)
-              {
-                    socket.ip =  requestIp.getClientIp(socket.request);
-              }
-              next();
-          }
-          else{
-           
-           redLog(`valid token with invalid userId`);
-           const err = new Error("not authorized invalid userId");
-           err.data = { content: "Please retry later" }; // additional details
-           next(err);
-          }
+     if (decoded) 
+     {
+        const isValidUser = await databaseService.findUserById(decoded.id);
+        
+        if (isValidUser == true)
+         {
+            bluelog(`user trying to connect with userid : ${decoded.id} is valid user . action will be update the socket`);
+         }
+        else
+         {
+           redLog(`user trying to connect with userid : ${decoded.id} is Not found in database . action will be create the USER`);
+         }
+             socket.userId = decoded.id;
+             socket.email = decoded.email;
+             if (socket.handshake.address)
+             {
+                   socket.ip =  requestIp.getClientIp(socket.request);
+             }
+             next();
+        //  }
+        //  else{
+          
+        //   redLog(`valid token with invalid userId`);
+        //   const err = new Error("not authorized invalid userId");
+        //   err.data = { content: "Please retry later" }; // additional details
+        //   next(err);
+        //  }
      }
      else{
        redLog(`user not authorized`);

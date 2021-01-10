@@ -113,7 +113,19 @@ const deleteUser = async(user)=>{
 /* #region retrieve */
 
 const getAllUsers = async()=>{};
-const findUserById = async(userId)=>{};
+const findUserById = async(userId)=>{
+    const currentUser  = await socketUser.findOne({userId:userId}); 
+    greenlog(`find user by id used by socketmiddle ware  `);
+    if (currentUser)
+     {
+         greenlog(`user found with id : ${currentUser.userId}`);
+         return true;
+     }
+     else{
+         redLog(`user not found in database`);
+        return false;
+     }
+};
 const isUserConnected = async(userId)=>{};
 const isUserConnectedUpdateSocket = async(userId,socketId)=>{};
 
@@ -127,7 +139,7 @@ const isUserConnectedUpdateSocket = async(userId,socketId)=>{};
 module.exports= {
 createOrUpdateUser,
 deleteUser,
-
 removeSocketId,
-updateConnectionStatus
+updateConnectionStatus,
+findUserById
 };
