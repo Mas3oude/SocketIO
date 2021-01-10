@@ -44,8 +44,10 @@ const mqClientInit = async()=>{
           messageQ.targetUserId,
           messageQ.payload);
 
-    },{noAck: false}); //false means that the message will not be removed from the Q 
-                      //yes means that the message will be REMOVED from the Q 
+    },{noAck: true});  // in current case i don't need to keep the message in the MQ because it will be saved in database if the user is offline
+                       // TODO Question  save the message to if the user online 
+    //false means that the message will not be removed from the Q 
+    //yes means that the message will be REMOVED from the Q 
   }
   catch (error)
   {

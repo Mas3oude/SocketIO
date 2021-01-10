@@ -40,9 +40,9 @@ const socket = io("http://localhost:7000/api/v1/notification",
 
         });
 
-        socket.on('messageToClients',(data)=>{
-                console.log(`data from server : ${data.text}`);
-                document.querySelector('#messages').innerHTML += `<li> ${data.senderid} : ${data.text} </li>`;
+        socket.on('Notification',(data)=>{
+                console.log(`data from server : ${data}`);
+                document.querySelector('#messages').innerHTML += `<li> ${data}</li>`;
             });
         
         socket.on('useDisConnected',(data)=>{
