@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.6.0",
     "app-root-path": "^3.0.0",
     "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
