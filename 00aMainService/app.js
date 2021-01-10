@@ -34,4 +34,6 @@ app.all('*', async (req, res, next) => {
    */
   app.use(errorHandler);
   
+  // init sockets
+  
   module.exports = app;

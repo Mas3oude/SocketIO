@@ -1,6 +1,6 @@
 const http = require('http');
 const app = require('./app');
-
+const socket = require('./src/socketioManager/socket');
 /**
  * @constant PORT the server listens to
  */
@@ -22,3 +22,5 @@ server.on('listening', async () => {
 server.on('close', () => {
   process.exit(0);
 });
+
+socket.initSocket(server);
