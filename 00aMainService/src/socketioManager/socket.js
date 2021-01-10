@@ -78,7 +78,7 @@ const onConnect = async (socket)=>{
      socket.on('newMessgeToServer',(message)=>{
          console.log(`test is the socket still have the data  : ${socket.userId}`);
          yellowLog(`simulation message from RabbitMQ : ${socket.id}  text : ${message.text} `);
-         sendNotificationByUserId (socket.userId,2,message.text);
+        // sendNotificationByUserId (socket.userId,2,message.text);
      });
 };
 

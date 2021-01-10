@@ -6,6 +6,7 @@ const {redLog,
       yellowLog,
       lightBlueLog}  = require('../utils/coloredConsole');
 const notificationMsg = require('./model/notificationMsg');
+const socketIoService = require('../socketioManager/socket');
 
 const rbitMQ = process.env.RABBITMQSERVER;
 const username = process.env.MQUSERNAME;
@@ -24,20 +25,24 @@ const opt = { credentials: require('amqplib').credentials.plain(username, passwo
 const mqClientInit = async()=>{
   try{
     const connection = await amqp.connect(rbitMQ,opt);
-    greenlog(`connection created ${connection}`);
+    lightBlueLog(`connection created DONE`);
 
     const channel = await connection.createChannel();
-    greenlog(`channel created ${channel}`);
+    lightBlueLog(`channel created DONE`);
 
     const result = await channel.assertQueue(queueName);
-    greenlog(`asset queue done : ${result}`);
+    lightBlueLog(`asset queue done DONE`);
 
-    lightBlueLog(`..................Waiting for the messages........................`);
+    greenlog(`..................Waiting for the messages........................`);
 
     channel.consume(queueName, message=>{
       const messageQ = new notificationMsg(1,2,`this is just testing message from me \n message from MQ :  ${message.content.toString()} `);
       lightBlueLog(messageQ.senderUserId +" "+ messageQ.targetUserId +" " +messageQ.payload);
       yellowLog(message.content.toString());
+      socketIoService.sendNotificationByUserId(
+          messageQ.senderUserId,
+          messageQ.targetUserId,
+          messageQ.payload);
 
     },{noAck: false}); //false means that the message will not be removed from the Q 
                       //yes means that the message will be REMOVED from the Q 
