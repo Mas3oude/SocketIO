@@ -9,9 +9,9 @@ const {
   const getMessagesbyUserId = async(req,res,next)=>{
       try{
         const userid = req.user.id;
-        const {offset, limit} =req.query;
-        yellowLog(`offset value : ${offset} and limit value : ${limit}`);
-        const usermessages = await databaseService.getMessagesbyUserId(userid,offset,limit);
+        const {offset, limit , seen} =req.query;
+        yellowLog(`offset value : ${offset} and limit value : ${limit} value of seen parameter ${seen}`);
+        const usermessages = await databaseService.getMessagesbyUserId(userid,offset,limit,seen);
          res.json(usermessages);
     }
       catch(err)

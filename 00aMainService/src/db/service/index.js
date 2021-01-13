@@ -186,12 +186,20 @@ const removeSocketId = async (currentSocket)=>{
 /* #region retrieve */
 
 const getAllUsers = async()=>{};
-const getMessagesbyUserId = async(userId,offset=1, limit = 10)=>{
+const getMessagesbyUserId = async(userId,offset=1, limit = 10,seen)=>{
    
     const currentUser = await findUserById(userId);
     const startindex = (offset -1) * limit;
     const endindex  = offset * limit;
-    return currentUser.messages.filter(msg => msg.seenByUser == false).slice(startindex,endindex); //currentUser.messages.find({seenByUser : false});
+    console.log(`seen parameter value : ${seen}`);
+    if (typeof seen !=="undefined") 
+    {
+        return currentUser.messages.filter(msg => msg.seenByUser.toString() == seen).slice(startindex,endindex); //currentUser.messages.find({seenByUser : false});
+    }
+    else
+    {
+        return currentUser.messages.slice(startindex,endindex);
+    }   
 };
 const isValidUser = async(userId)=>{
     const currentUser  = await socketUser.findOne({userId:userId}); 
