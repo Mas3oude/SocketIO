@@ -1,9 +1,9 @@
 const { Router } = require('express');
 const {jwtAccessProtect} = require('../../middleware/jwtProtect');
 const validatePaginationQueryString = require('../../middleware/validatePaginationQuery');
-const validateUpdateMessageRequest = require('../../middleware/validateupdateRequest');
+const {validateUpdateMessageBody,validateDeleteMessageBody} = require('../../middleware/validateupdateRequest');
 const validateRequest = require('../../middleware/validateRequest');
-const {getMessagesbyUserId,updateMessagesbyUserIdMessageId} = require('../../controller');
+const {getMessagesbyUserId,updateMessagesbyUserIdMessageId,deleteMessagesbyUserIdMessageId} = require('../../controller');
 
 
 const router = new Router();
@@ -21,9 +21,15 @@ router.get('/me',
 
 router.put('/me',
          jwtAccessProtect,
-         validateUpdateMessageRequest,
+         validateUpdateMessageBody,
          validateRequest,
          updateMessagesbyUserIdMessageId
 );
 
+router.delete('/me',
+         jwtAccessProtect,
+         validateDeleteMessageBody,
+         validateRequest,
+         deleteMessagesbyUserIdMessageId
+);
 module.exports = router;

@@ -33,5 +33,18 @@ const {
         res.status(404).send(results.message);
       }
   };
+  const deleteMessagesbyUserIdMessageId =async(req,res,next)=>{
+    const userId = req.user.id;
+    const {messageId} = req.body;
+  
+   const results = await databaseService.deleteMessagesbyUserIdMessageId(userId,messageId);
+   if (!results.error)
+   {
+    res.send("DONE");
+   }
+    else{
+      res.status(404).send(results.message);
+    }
+};
 
-  module.exports = {getMessagesbyUserId,updateMessagesbyUserIdMessageId};
+  module.exports = {getMessagesbyUserId,updateMessagesbyUserIdMessageId,deleteMessagesbyUserIdMessageId};

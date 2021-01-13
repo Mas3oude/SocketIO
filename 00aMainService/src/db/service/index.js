@@ -126,7 +126,32 @@ const updateConnectionStatus = async (isConnected, userId)=>{};
 const deleteUser = async(user)=>{
 
 };
-
+const deleteMessagesbyUserIdMessageId =async (userId,messageid)=>{
+    try{
+        const currentUser = await findUserById(userId);
+      // const targetMessage = currentUser.messages.filter(message => message._id == messageid);
+       const targetMessageindex = currentUser.messages.findIndex(m=> m._id == messageid);
+       if (targetMessageindex >= 0)
+        {
+            currentUser.messages.splice(targetMessageindex, targetMessageindex >= 0 ? 1 : 0);
+            const results = await currentUser.save();
+            if (results)
+            return{ 
+                error : false,
+                message :''};
+        }
+        else{
+            return {
+                error : true,
+                message : 'Message Id is not valid'};
+        }
+    }
+    catch (execp)
+    {
+        redLog(`error while updatding ${execp}`);
+        throw execp;
+    }
+};
 const removeSocketId = async (currentSocket)=>{
     const currentUser  = await socketUser.findOne({userId:currentSocket.userId});
     if (currentUser)
@@ -214,5 +239,6 @@ isValidUser,
 findUserById,
 createUserMessage,
 getMessagesbyUserId,
-updateMessagesbyUserIdMessageId
+updateMessagesbyUserIdMessageId,
+deleteMessagesbyUserIdMessageId
 };
