@@ -133,9 +133,13 @@ const removeSocketId = async (currentSocket)=>{
 /* #region retrieve */
 
 const getAllUsers = async()=>{};
-const getMessagesbyUserId = async(userid)=>{
-    const currentUser = await findUserById(userid);
-    return currentUser.messages;
+const getMessagesbyUserId = async(userId,offset=1, limit = 10)=>{
+    // socketUser.find({userid: userid} )
+  // const messages =  await socketUser.find({ "$and": [{userId:userId}, {"messages.seenByUser": false}] });
+    const currentUser = await findUserById(userId);
+    const startindex = (offset -1) * limit;
+    const endindex  = offset * limit;
+    return currentUser.messages.filter(msg => msg.seenByUser == false).slice(startindex,endindex); //currentUser.messages.find({seenByUser : false});
 };
 const isValidUser = async(userId)=>{
     const currentUser  = await socketUser.findOne({userId:userId}); 
