@@ -19,6 +19,10 @@ app.use(express.static(__dirname+'/public'));
 app.use(morgan('combined'));
 app.use(morgan('combined', { stream: winston.stream }));
 
+// app.get('/', function(request, response) {
+// 	response.sendFile(path.join(__dirname + '/public/login.html'));
+// });
+
 /**
  * handling 404 not found paths
  */
