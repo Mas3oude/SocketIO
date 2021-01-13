@@ -91,6 +91,34 @@ const updateUser = async(currentSocket,currentsocketUser)=>{
    
 };
 
+const updateMessagesbyUserIdMessageId = async(userId,messageid,seenByUser)=>
+{
+try{
+    const currentUser = await findUserById(userId);
+   const targetMessage = currentUser.messages.filter(message => message._id == messageid);
+   if (targetMessage.length > 0)
+    {
+        targetMessage[0].seenByUser = seenByUser;
+        const results = await currentUser.save();
+        if (results)
+        return{ 
+            error : false,
+            message :''};
+    }
+    else{
+        return {
+            error : true,
+            message : 'Message Id is not valid'};
+    }
+}
+catch (execp)
+{
+    redLog(`error while updatding ${execp}`);
+    throw execp;
+}
+  
+
+};
 const updateConnectionStatus = async (isConnected, userId)=>{};
 /*#endregion */
 
@@ -134,8 +162,7 @@ const removeSocketId = async (currentSocket)=>{
 
 const getAllUsers = async()=>{};
 const getMessagesbyUserId = async(userId,offset=1, limit = 10)=>{
-    // socketUser.find({userid: userid} )
-  // const messages =  await socketUser.find({ "$and": [{userId:userId}, {"messages.seenByUser": false}] });
+   
     const currentUser = await findUserById(userId);
     const startindex = (offset -1) * limit;
     const endindex  = offset * limit;
@@ -186,5 +213,6 @@ updateConnectionStatus,
 isValidUser,
 findUserById,
 createUserMessage,
-getMessagesbyUserId
+getMessagesbyUserId,
+updateMessagesbyUserIdMessageId
 };

@@ -1,8 +1,9 @@
 const { Router } = require('express');
 const {jwtAccessProtect} = require('../../middleware/jwtProtect');
 const validatePaginationQueryString = require('../../middleware/validatePaginationQuery');
+const validateUpdateMessageRequest = require('../../middleware/validateupdateRequest');
 const validateRequest = require('../../middleware/validateRequest');
-const {getMessagesbyUserId} = require('../../controller');
+const {getMessagesbyUserId,updateMessagesbyUserIdMessageId} = require('../../controller');
 
 
 const router = new Router();
@@ -15,6 +16,14 @@ router.get('/me',
          validatePaginationQueryString,
          validateRequest,
          getMessagesbyUserId
+);
+
+
+router.put('/me',
+         jwtAccessProtect,
+         validateUpdateMessageRequest,
+         validateRequest,
+         updateMessagesbyUserIdMessageId
 );
 
 module.exports = router;

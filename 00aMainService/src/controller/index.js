@@ -20,4 +20,18 @@ const {
       }
   };
 
-  module.exports = {getMessagesbyUserId};
+  const updateMessagesbyUserIdMessageId = async(req,res,next)=>{
+      const userId = req.user.id;
+      const {messageId,seenByUser} = req.body;
+     // res.send(`update by userid : ${userId} with messageid : ${messageId}`);
+     const results = await databaseService.updateMessagesbyUserIdMessageId(userId,messageId,seenByUser);
+     if (!results.error)
+     {
+      res.send("DONE");
+     }
+      else{
+        res.status(404).send(results.message);
+      }
+  };
+
+  module.exports = {getMessagesbyUserId,updateMessagesbyUserIdMessageId};
