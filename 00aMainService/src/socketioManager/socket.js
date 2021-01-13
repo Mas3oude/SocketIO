@@ -1,6 +1,6 @@
 const socketio = require('socket.io');
 const requestIp = require('request-ip');
-const verifyToken = require('../middleware/jwtProtect');
+const {verifyToken }= require('../middleware/jwtProtect');
 const {redLog,yellowLog,bluelog} = require('../utils/coloredConsole');
 const databaseService = require('../db/service');
 /* #region publicVars */
@@ -105,6 +105,10 @@ try{
     // init socket.io
     bluelog('init socket io');
     io = socketio(expressServer,{
+        cors: {
+            origin: "*",
+          methods: ["GET", "POST"]
+        },
         //path : '/api/v1/testing',
         pingInterval: 10000,
         pingTimeout: 5000,

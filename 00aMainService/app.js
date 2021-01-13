@@ -2,6 +2,7 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 var morgan = require('morgan');
+var cors = require('cors');
 var winston = require('./config/winston');
 const favicon = require('serve-favicon');
 const errorHandler = require('./src/middleware/errorHandler');
@@ -18,7 +19,7 @@ app.use(favicon(path.join(__dirname, 'public', 'notificationIcon.png')));
 app.use(express.static(__dirname+'/public'));
 app.use(morgan('combined'));
 app.use(morgan('combined', { stream: winston.stream }));
-
+app.options('*', cors());
 app.use('/api/v1', apiRouter);
 // app.get('/', function(request, response) {
 // 	response.sendFile(path.join(__dirname + '/public/login.html'));
@@ -29,7 +30,7 @@ app.use('/api/v1', apiRouter);
  */
 app.all('*', async (req, res, next) => {
     const err = //new NotFoundError(
-      `${req.originalUrl} does not exist on the server`
+      `${req.originalUrl} does not exist on the server`;
    // );
     next(err);
   });
