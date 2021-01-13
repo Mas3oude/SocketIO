@@ -46,12 +46,14 @@ const createUser = async(currentSocket)=>{
     });
 };
 
-const createUserMessage = async (senderUserId,targetUserId,messagePayLoad)=>{
+const createUserMessage = async (senderUserId,targetUserId,messagePayLoad,sendToTarget =false,seenByUser = false)=>{
     const targetUser = await findUserById(targetUserId);
+
     const message = {
         senderUserId : senderUserId,
         payload : messagePayLoad,
-        sentToTarget : false
+        sentToTarget : sendToTarget,
+        seenByUser   : seenByUser
     }
     targetUser.messages.push(message);
 
@@ -131,7 +133,10 @@ const removeSocketId = async (currentSocket)=>{
 /* #region retrieve */
 
 const getAllUsers = async()=>{};
-
+const getMessagesbyUserId = async(userid)=>{
+    const currentUser = await findUserById(userid);
+    return currentUser.messages;
+};
 const isValidUser = async(userId)=>{
     const currentUser  = await socketUser.findOne({userId:userId}); 
     greenlog(`check if user is in database using isValidUser from SocketMiddleware  `);
@@ -146,7 +151,8 @@ const isValidUser = async(userId)=>{
      }
 };
 
-const findUserById = async(userId)=>{
+const findUserById = async(userId,offset = 0,limit = 10)=>{
+
     const currentUser  = await socketUser.findOne({userId:userId}); 
     if (currentUser)
      {
@@ -175,5 +181,6 @@ removeSocketId,
 updateConnectionStatus,
 isValidUser,
 findUserById,
-createUserMessage
+createUserMessage,
+getMessagesbyUserId
 };

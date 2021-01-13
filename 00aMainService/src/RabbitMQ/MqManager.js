@@ -36,7 +36,15 @@ const mqClientInit = async()=>{
     greenlog(`..................Waiting for the messages........................`);
 
     channel.consume(queueName, message=>{
-      const messageQ = new notificationMsg(1,2,`this is just testing message from me \n message from MQ :  ${message.content.toString()} `);
+      let msgObj;
+      try{
+       msgObj = JSON.parse(message.content.toString());
+      }
+      catch(ex){
+        redLog(`exception while paring the message this is  critical ${ex}`);
+        throw(ex);
+      }
+      const messageQ = new notificationMsg(msgObj.senderUserId,msgObj.targetUserId,msgObj.payload);
       lightBlueLog(messageQ.senderUserId +" "+ messageQ.targetUserId +" " +messageQ.payload);
       yellowLog(message.content.toString());
       socketIoService.sendNotificationByUserId(

@@ -5,7 +5,7 @@ var morgan = require('morgan');
 var winston = require('./config/winston');
 const favicon = require('serve-favicon');
 const errorHandler = require('./src/middleware/errorHandler');
-
+const apiRouter = require('./src/router');
 /**
  * @constant App is the starting of the application
  */
@@ -19,6 +19,7 @@ app.use(express.static(__dirname+'/public'));
 app.use(morgan('combined'));
 app.use(morgan('combined', { stream: winston.stream }));
 
+app.use('/api/v1', apiRouter);
 // app.get('/', function(request, response) {
 // 	response.sendFile(path.join(__dirname + '/public/login.html'));
 // });

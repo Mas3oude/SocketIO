@@ -20,7 +20,8 @@ const socketUserSchema = mongoose.Schema({
             senderUserId : {type : Number,required:true},
             date : { type: Date, default: Date.now },
             payload : {type:String,require : true},
-            sentToTarget : {type:Boolean,required:true}
+            sentToTarget : {type:Boolean,required:true},
+            seenByUser : {type:Boolean, required:true, default : false}
         }
     ]
 });

@@ -168,11 +168,15 @@ const sendNotificationByUserId= async (senderUserId, targetUserId, messagePayLoa
                 }
             }
             bluelog(`notification sent successfully`);
+            bluelog(`save message to database even user online`);
+            const saveMessageResults = await databaseService.createUserMessage(senderUserId,targetUserId,messagePayLoad,true,false);
+            if (saveMessageResults == true)
+            bluelog(`message save successfully to database`);
         }
         else{
             yellowLog(`user status is offline`);
             yellowLog(`notification will be saved in database`);
-            const saveMessageResults = await databaseService.createUserMessage(senderUserId,targetUserId,messagePayLoad);
+            const saveMessageResults = await databaseService.createUserMessage(senderUserId,targetUserId,messagePayLoad,false,false);
             if (saveMessageResults == true)
             bluelog(`message save successfully to database`);
         }
