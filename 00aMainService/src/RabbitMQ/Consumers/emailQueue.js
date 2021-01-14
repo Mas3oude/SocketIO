@@ -5,7 +5,7 @@ const {redLog,
       bluelog,
       yellowLog,
       lightBlueLog}  = require('../../utils/coloredConsole');
-const notificationMsg = require('../model/notificationMsg');
+const emailMsg = require('../model/emailMsg');
 const socketIoService = require('../../socketioManager/socket');
 
 const rbitMQ = process.env.RABBITMQSERVER;

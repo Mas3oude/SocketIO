@@ -8,6 +8,7 @@ const sendEmail = (msg,mailList)=>{
      {
          throw 'email list is empty';
      }
+     
      // fill infromation from env variables
      const emailHost = process.env.EmailHOST;
      const emailPort = process.env.EmailPort;
@@ -41,7 +42,7 @@ const sendEmail = (msg,mailList)=>{
 
           transporter.sendMail({
             from: emailUser,
-            to: msg.to, //reciever of the email
+            to: mailList.join(),//msg.to, //reciever of the email
             subject: msg.subject, // Subject of the email
             html:msg.html, // html body
           },(err,info)=>{
