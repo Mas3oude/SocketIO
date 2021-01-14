@@ -30,7 +30,7 @@ const jwtAccessProtect = async (req, res, next) => {
     // await AuthService.validateAccessToken(bearerToken);
 
     const token = bearerToken.replace('Bearer ', '');
-    const decoded = verifyToken(token,process.env.JWT_ACCESS_KEY);
+    const decoded = verifyToken(token,process.env.JWT_ACCESS_SECRET);
     const user = { id: decoded.id, email: decoded.email };
     req.user = user;
     next();

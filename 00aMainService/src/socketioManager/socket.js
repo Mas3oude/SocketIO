@@ -16,8 +16,8 @@ const validateUse =async (socket,next)=>{
     const actualToken = headerToken.replace('Bearer ', '');
  
     // const nameSpaceToken = socket.handshake.query.token;
-    // const decoded = verifyToken(nameSpaceToken,process.env.JWT_ACCESS_KEY);
-    const decoded = verifyToken(actualToken,process.env.JWT_ACCESS_KEY);
+    // const decoded = verifyToken(nameSpaceToken,process.env.JWT_ACCESS_SECRET);
+    const decoded = verifyToken(actualToken,process.env.JWT_ACCESS_SECRET);
      if (decoded) 
      {
         const isValidUser = await databaseService.isValidUser(decoded.id);
