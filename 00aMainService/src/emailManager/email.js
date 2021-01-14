@@ -2,9 +2,9 @@ require('dotenv').config();
 
 const nodemailer = require("nodemailer");
 
-const sendEmail = (msg,mailList)=>{
+const sendEmail = (message)=>{
    
-     if (mailList == null || mailList.length == 0)
+     if (message.emailLst == null || message.emailLst.length == 0)
      {
          throw 'email list is empty';
      }
@@ -42,9 +42,9 @@ const sendEmail = (msg,mailList)=>{
 
           transporter.sendMail({
             from: emailUser,
-            to: mailList.join(),//msg.to, //reciever of the email
-            subject: msg.subject, // Subject of the email
-            html:msg.html, // html body
+            to: message.emailLst.join(),//msg.to, //reciever of the email
+            subject: message.subject, // Subject of the email
+            html:message.payload, // html body
           },(err,info)=>{
               if (err)
               {
@@ -52,7 +52,7 @@ const sendEmail = (msg,mailList)=>{
               }
               else if (info)
               {
-                resolve(info);
+                resolve(info.response);
               }
           });
     

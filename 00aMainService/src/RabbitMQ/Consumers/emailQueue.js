@@ -7,6 +7,9 @@ const {redLog,
       lightBlueLog}  = require('../../utils/coloredConsole');
 const emailMsg = require('../model/emailMsg');
 const socketIoService = require('../../socketioManager/socket');
+const sendEmail = require('../../emailManager/email');
+
+
 
 const rbitMQ = process.env.RABBITMQSERVER;
 const username = process.env.MQUSERNAME;
@@ -43,15 +46,14 @@ const mqClientInit = async()=>{
         redLog(`exception while paring the message this is  critical ${ex}`);
         throw(ex);
       }
-      const messageQ = new notificationMsg(msgObj.senderUserId,msgObj.targetUserId,msgObj.payload);
-      lightBlueLog(messageQ.senderUserId +" "+ messageQ.targetUserId +" " +messageQ.payload);
+      const messageQ = new emailMsg(msgObj.message,msgObj.emailLst);
+      lightBlueLog(`email subject : ${messageQ.subject} email payload : ${messageQ.payload} \n email list : ${messageQ.emailLst}`);
       yellowLog(message.content.toString());
-      socketIoService.sendNotificationByUserId(
-          messageQ.senderUserId,
-          messageQ.targetUserId,
-          messageQ.payload);
+      sendEmail(messageQ)
+      .then(result => {greenlog(`email send sucessfully ${result}`);})
+      .catch(err=>redLog(`error while sending email : ${err}`));
 
-    },{noAck: true});  // in current case i don't need to keep the message in the MQ because it will be saved in database if the user is offline
+    },{noAck:true});  // in current case i don't need to keep the message in the MQ because it will be saved in database if the user is offline
                        // TODO Question  save the message to if the user online 
     //false means that the message will not be removed from the Q 
     //yes means that the message will be REMOVED from the Q 

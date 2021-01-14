@@ -1,8 +1,9 @@
 class emailMsg {
-    constructor (messagePayload,emailLst)
+    constructor (message,emailLst)
     {
-        this.messagePayload = messagePayload;
         this.emailLst = emailLst;
+        this.subject = message.subject;
+        this.payload = message.payload;
     }
 
 }
