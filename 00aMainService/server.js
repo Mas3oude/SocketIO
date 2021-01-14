@@ -1,7 +1,8 @@
 const http = require('http');
 const app = require('./app');
 const socket = require('./src/socketioManager/socket');
-const mqCliet = require('./src/RabbitMQ/MqManager');
+const { emailRMQ,
+  notficationRMQ} = require('./src/RabbitMQ/MqManager');
 /**
  * @constant PORT the server listens to
  */
@@ -25,4 +26,5 @@ server.on('close', () => {
 });
 
 socket.initSocket(server);
-mqCliet.mqClientInit();
+emailRMQ.mqClientInit();
+notficationRMQ.mqClientInit();
