@@ -1,7 +1,7 @@
 const validToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNlY29uZHVzZXJAZW1haWwuY29tIiwiaWQiOjIsInN0YXR1cyI6MywiaWF0IjoxNjEwMjkwNzYxLCJleHAiOjE2MTExNTQ3NjF9.1wByuRP0mtV-K10AUqGLZxQm0G1ry-353-bLrF5Q45w";
 const invalidUserId = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpcnN0dXNlckBlbWFpbC5jb20iLCJpZCI6Miwic3RhdHVzIjozLCJpYXQiOjE2MDk3NjMwMjMsImV4cCI6MTYxMDYyNzAyM30.UcAasmpp4hW00Os3WWkFv96V4mAW3vemNJzkqtR4h2M";
 
-const socket = io("http://localhost:7000/api/v1/notification",
+const socket = io("http://46.101.170.228/:7000/api/v1/notification",
 {
     extraHeaders :{
         Authorization: `Bearer ${validToken}`
