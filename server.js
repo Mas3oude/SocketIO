@@ -5,7 +5,7 @@ const socket = require('./src/socketioManager/socket');
 /**
  * @constant PORT the server listens to
  */
-const PORT = process.env.PORT || '3002';
+const PORT = process.env.PORT || '3006';
 
 /**
  * Create HTTP server.
