@@ -17,7 +17,7 @@ const validateUse =async (socket,next)=>{
     // const nameSpaceToken = socket.handshake.query.token;
     // const decoded = verifyToken(nameSpaceToken,process.env.JWT_ACCESS_SECRET);
     const secretKey = process.env.JWT_ACCESS_SECRET || "jwt_access_secret";
-    const decoded = verifyToken(actualToken,process.env.JWT_ACCESS_SECRET);
+    const decoded = verifyToken(actualToken,secretKey);
      if (decoded) 
      {
              socket.userId = decoded.id;
