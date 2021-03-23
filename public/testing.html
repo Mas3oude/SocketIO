@@ -1,0 +1,108 @@
+<html>
+    <header>
+        <title>Simple Chat app</title>
+    </header>
+<body>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <style>
+        input{
+            width: 100%;
+            height: 35px;
+        }
+        #messages{
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        #messages li{
+            padding: 5px 10px;
+        }
+        #messages li:nth-child(odd){
+            background: #eee;
+        }
+    </style>
+    <h1>welcome to my chat app</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <form id="message-form">
+                    <div class="col-sm-10">
+                        <input id="user-message" type="text" placeholder="enter your message" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input class="btn btn-primary" type="submit" value="send!" />
+                    </div>
+                </form>
+                <ul id="messages">
+                    <!-- THIS WILL BE POPULATED BY JAVASCRIPT -->
+                </ul> 
+            </div>
+        </div>
+    </div>
+    <!-- assign the socketio lib -->
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.js" ></script>
+  
+    <script > 
+    const validToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hczNvdWRlYmFja3VwQGdtYWlsLmNvbSIsImlkIjoxNiwic3RhdHVzSWQiOjMsImNvbXBhbmllcyI6W3siY29tcGFueUlkIjo3LCJpc093bmVyIjp0cnVlfSx7ImNvbXBhbnlJZCI6MTYsImlzT3duZXIiOnRydWV9LHsiY29tcGFueUlkIjo4LCJpc093bmVyIjpmYWxzZX0seyJjb21wYW55SWQiOjksImlzT3duZXIiOmZhbHNlfV0sImlhdCI6MTYxNjAxMDI5MSwiZXhwIjoxNjE2NjE1MDkxfQ.0q59Yen02gESwXK11iIOWaqQ9pq2KjqQXoki_lmCzfA&EIO=4&transport=polling&t=NX1mKBg";
+//const psValidToke = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIxNzAxN0BlbWFpbC5jb20iLCJpZCI6MzIsInN0YXR1cyI6MywiaWF0IjoxNjEwNzI0NzcwLCJleHAiOjE2MTMzMTY3NzB9.HS4xP28xZ3sLnCISx_FKR0Y8wxT8F85sSS8u6atzxLA";
+
+const invalidUserId = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpcnN0dXNlckBlbWFpbC5jb20iLCJpZCI6Miwic3RhdHVzIjozLCJpYXQiOjE2MDk3NjMwMjMsImV4cCI6MTYxMDYyNzAyM30.UcAasmpp4hW00Os3WWkFv96V4mAW3vemNJzkqtR4h2M";
+
+const socket = io("https://localhost:3002/api/v1/notification",
+//const socket = io("http://46.101.170.228:7000/api/v1/notification",
+{
+    extraHeaders :{
+        Authorization: `Bearer ${validToken}`
+    }
+});
+
+        // client-side
+    socket.on("connect_error", err => {
+    console.log(err instanceof Error); // true
+    console.log(err.message); // not authorized
+    console.log(err.data); // { content: "Please retry later" }
+    });
+        //console.log(socket.id); // will not work here because it is async 
+        //console.log(socket);
+        
+        // when the connection established the socket.id will have value
+        socket.on('connect',()=>{
+            console.log(`connection to namespace is working fine with id ${socket.id}`);
+            console.log(`check if the socket had some data  ${socket.userId} ${socket.email}`);
+        });
+
+        // listen to event
+        socket.on('messageFromServer',(data)=>{
+
+            console.log(data);
+            socket.emit('messageFromClient',{someData: `this is some data from the client`});
+
+        });
+         
+        document.querySelector('#message-form').addEventListener('submit',
+        (event)=>{
+            event.preventDefault();
+            //console.log("form Submitted");
+            const newMessage = document.querySelector('#user-message').value;
+            //console.log(`new Messge : ${newMessage}`);
+            socket.emit('newMessgeToServer',{text: newMessage});
+
+        });
+
+        socket.on('messageToClients',(data)=>{
+                console.log(`data from server : ${data.text}`);
+                document.querySelector('#messages').innerHTML += `<li> ${data.senderid} : ${data.text} </li>`;
+            });
+        
+        socket.on('useDisConnected',(data)=>{
+            
+            console.log(`user with ID : ${data.userid}`);
+            document.querySelector('#messages').innerHTML += `<li> user with id : ${data.userid} ====> DISCONNECTED </li>`;
+        });
+
+    </script>
+      
+</body>
+</html>
