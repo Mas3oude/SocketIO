@@ -17,8 +17,8 @@ router.get('/static',(req,res)=>{
         
     }
     console.log(`the path for static file : ${rootpath+'public/testing.html'}`);
-    console.log(path.join(rootpath+'public/user1.html'));
-    res.sendFile(path.join(rootpath+'public/user1.html'));
+    console.log(path.join(rootpath+'public/testing.html'));
+    res.sendFile(path.join(rootpath+'public/testing.html'));
   });
 
 
