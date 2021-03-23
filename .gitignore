@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+.metals/metals.h2.db
+.gitignore
+.vscode/settings.json
+.metals/metals.lock.db

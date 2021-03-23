@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken');
 
 
 const payload = {
-    email:'firstuser@email.com',
-    id : 2,
+    email:'user1825@email.com',
+    id : 102,
     status:3
 };
 
-const secret = process.env.JWT_ACCESS_KEY;
-const expiresIn = process.env.JWT_Expiry;
+const secret = 'jwt_access_secret';//process.env.JWT_ACCESS_KEY;
+const expiresIn = '30d';
 
 const generateToken = (payload, secret, expiresIn) => {
     const options = {
