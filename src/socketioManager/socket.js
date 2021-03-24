@@ -64,7 +64,8 @@ try{
             origin: "*",
           methods: ["GET", "POST"]
         },
-        //path : '/api/v1/testing',
+       
+       path : "/ap1/v1/notinit/socket.io",
         pingInterval: 10000,
         pingTimeout: 5000,
         cookie: false
